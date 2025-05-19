@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Personal Website</title>
+  <style>
+    body {
+      font-family: "Times New Roman", Times, serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #FFF0F5;
+    }
+
+    header {
+        width: 100%;
+        height: 300px;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        text-align: center;
+    }
+        
+    header video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+
+    header .header-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #E8ADAA;
+        text-shadow: 8px 8px 12px #000;
+        font-size: 65px;
+        font-family: 'Lucida Handwriting', cursive;
+     }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #BC8F8F;
+      padding-top: 20px;
+      position: fixed;
+      top: 300px;
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+    }
+
+    .sidebar a {
+      padding: 15px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 18px;
+      color: #333333;
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar a:hover {
+      background-color: #FFF0F5;
+      transform: translateX(10px);
+    }
+    
+    .sidebar a.active {
+      background-color: #FFF0F5;
+      font-weight: bold;
+    }
+
+    .main-content {
+      margin-left: 260px;
+      padding: 20px;
+      width: calc(100% - 250px);
+      overflow-y: auto;
+    }
+
+    .content {
+      display: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .active-content {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    #home img {
+      width: 300px;
+      height: 200px;
+      border-radius: 10px;
+      margin: 10px 0;
+      transition: transform 0.3s ease;
+    }
+
+    .content img {
+      width: 200px;
+      height: auto;
+      border-radius: 10px;
+      margin: 10px 20px 20px 0;
+      transition: transform 0.3s ease;
+      border: 2px solid #BC8F8F;
+    }
+    
+    .content img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .image-container {
+      display: inline-block;
+      margin: 10px;
+      position: relative;
+    }
+    
+    .image-description {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(188, 143, 143, 0.8);
+      color: white;
+      padding: 8px;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    .image-container:hover .image-description {
+      display: block;
+    }
+        
+    hr {
+      border: 0;
+      height: 1px;
+      background: #ddd;
+      margin: 30px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 10px;
+      text-align: left;
+      transition: background-color 0.3s ease;
+    }
+
+    th {
+      background-color: #BC8F8F;
+    }
+    
+    tr:hover td {
+      background-color: #f5e5e5;
+    }
+
+    footer {
+      background-color: #BC8F8F;
+      color: white;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        position: static;
+        top: auto;
+      }
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+    
+    .education-intro {
+      font-size: 18px;
+      margin-bottom: 30px;
+      color: #555;
+      text-align: center;
+      font-style: italic;
+    }
+    
+    .education-container {
+      position: relative;
+      margin: 20px 0 40px 0;
+    }
+    
+    .education-timeline {
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 30px;
+      z-index: 1;
+    }
+    
+    .timeline-line {
+      position: absolute;
+      left: 15px;
+      top: 20px;
+      bottom: 20px;
+      width: 4px;
+      background: linear-gradient(to bottom, #FFCCCC, #BC8F8F, #8B4513);
+    }
+    
+    .timeline-dot {
+      position: absolute;
+      left: 7px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    
+    .timeline-dot.primary {
+      top: 60px;
+      background-color: #FFCCCC;
+    }
+    
+    .timeline-dot.secondary {
+      top: 50%;
+      background-color: #BC8F8F;
+    }
+    
+    .timeline-dot.diploma {
+      bottom: 60px;
+      background-color: #8B4513;
+    }
+    
+    .education-table-container {
+      padding-left: 60px;
+    }
+    
+    .education-table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    
+    .education-table th {
+      background-color: #BC8F8F;
+      color: white;
+      padding: 15px;
+      text-align: left;
+      font-weight: bold;
+    }
+    
+    .education-table td {
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .education-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .primary-education {
+      border-left: 5px solid #FFCCCC;
+    }
+    
+    .secondary-education {
+      border-left: 5px solid #BC8F8F;
+    }
+    
+    .Diploma-education {
+      border-left: 5px solid #8B4513;
+    }
+    
+    .education-table tr:hover td {
+      background-color: #FCF5F5;
+    }
+    
+    .education-details {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+    
+    .education-card {
+      width: 30%;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease;
+    }
+    
+    .education-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .card-header {
+      padding: 15px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    
+    .primary-card {
+      background-color: #FFCCCC;
+      color: #333;
+    }
+    
+    .secondary-card {
+      background-color: #BC8F8F;
+    }
+    
+    .tertiary-card {
+      background-color: #8B4513;
+    }
+    
+    .card-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    
+    .school-icon {
+      font-size: 30px;
+      margin: 10px 0;
+    }
+    
+    .card-content {
+      padding: 15px;
+      background-color: white;
+    }
+    
+    .card-content ul {
+      padding-left: 20px;
+    }
+    
+    .card-content li {
+      margin-bottom: 8px;
+    }
+    
+    .contact-container {
+      padding: 20px;
+    }
+    
+    .contact-intro {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .contact-intro p {
+      font-size: 18px;
+      color: #555;
+    }
+    
+    .contact-cards {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+    
+    .contact-card {
+      width: 30%;
+      text-align: center;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .contact-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .contact-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    
+    .contact-card h3 {
+      margin: 10px 0;
+      color: #BC8F8F;
+    }
+    
+    .contact-button {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 8px 20px;
+      background-color: #BC8F8F;
+      color: white;
+      text-decoration: none;
+      border-radius: 20px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .contact-button:hover {
+      background-color: #A47777;
+    }
+    
+    @media (max-width: 768px) {
+      .education-card,
+      .contact-card {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      
+      .education-details,
+      .contact-cards {
+        flex-direction: column;
+      }
+      
+      .education-timeline {
+        display: none;
+      }
+      
+      .education-table-container {
+        padding-left: 0;
+      }
+      
+      .social-icons {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <video autoplay muted loop>
+      <source src="video/video banner.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="header-text">IZZAH'S PERSONAL SPACE</div>
+  </header>
+
+  <div class="main-container">
+    <div class="sidebar">
+      <a href="#" id="home-link" class="active" onclick="showContent('home')">Home</a>
+      <a href="#" id="about-link" onclick="showContent('about')">About Me</a>
+      <a href="#" id="education-link" onclick="showContent('education')">Education</a>
+      <a href="#" id="hobbies-link" onclick="showContent('hobbies')">Hobbies</a>
+      <a href="#" id="family-link" onclick="showContent('family')">My Family</a>
+      <a href="#" id="friends-link" onclick="showContent('friends')">My Uni Friends</a>
+      <a href="#" id="contact-link" onclick="showContent('contact')">Contact</a>
+    </div>
+
+    <div class="main-content">
+      <div id="home" class="content active-content">
+        <h2>Home&#127968</h2>
+        <p>Hello!&#127775  Welcome to my personal website where you can learn more about me and my life journey&#128151;.</p>
+        <div class="image-container">
+          <img src="video/welcome.jpg" alt="Home Image">
+          <div class="image-description">Welcome to my personal website! A warm greeting to all visitors.</div>
+        </div>
+      </div>
+
+      <div id="about" class="content">
+        <h2>About Me&#127800</h2>
+        <p>Hi! I'm Izzah Batrisyia Binti Abdul Ghoni. I'm 20 years old and I was born on 13th June 2005. I lived and grew up in the state of Penang. I'm currently a student at Universiti Teknologi MARA (UiTM), Sungai Petani, Kedah, where I am furthering my education and developing both academic and personal skills. I describe myself as a hardworking and happy-go-lucky person who enjoys making new friends and taking on new challenges in my life. In my free time, I love exploring new knowledge and spending time with friends and family. I love island so much and I'm not afraid to try extreme sport to healing my soul. I believe that every experience is a chance to make myself grow and become better.</p>
+        <div class="image-container">
+          <img src="video/izzahcomel.jpg" alt="About Me Photo"> 
+          <div class="image-description">This is me, Izzah Batrisyia, a happy-go-lucky student at UiTM Kedah.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/nature.jpg" alt="Nature Photo"> 
+          <div class="image-description">Enjoying the beauty of nature - one of my favorite ways to find peace.</div>
+        </div>
+      </div>
+
+      <div id="education" class="content">
+        <h2>Education&#128175</h2>
+        <p class="education-intro">My academic journey has shaped me into who I am today. Here's a timeline of my educational path:</p>
+        
+        <div class="education-container">
+          <div class="education-timeline">
+            <div class="timeline-dot primary"></div>
+            <div class="timeline-dot secondary"></div>
+            <div class="timeline-dot tertiary"></div>
+            <div class="timeline-line"></div>
+          </div>
+          
+          <div class="education-table-container">
+            <table class="education-table">
+              <tr>
+                <th>Year</th>
+                <th>Place</th>
+                <th>Level</th>
+              </tr>
+              <tr class="primary-education">
+                <td>2012-2017</td>
+                <td>SK Tasek Gelugor</td>
+                <td>Primary</td>
+              </tr>
+              <tr class="secondary-education">
+                <td>2018-2023</td>
+                <td>SMA Daeratul Maarifil Wataniah 1</td>
+                <td>Secondary</td>
+              </tr>
+              <tr class="tertiary-education">
+                <td>2023-2026</td>
+                <td>Universiti Teknologi MARA (UiTM), Cawangan Kedah</td>
+                <td>Diploma</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        
+        <div class="education-details">
+          <div class="education-card">
+            <div class="card-header primary-card">
+              <h3>Primary Education</h3>
+              <div class="school-icon">🏫</div>
+            </div>
+            <div class="card-content">
+              <p>At SK Tasek Gelugor, I developed my foundation in learning and discovered for beginner knowledge. I participated in various co-curricular activities including:</p>
+              <ul>
+                <li>School prefect</li>
+                <li>Traditional dancer</li>
+                <li>A track athlete trains every day</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="education-card">
+            <div class="card-header secondary-card">
+              <h3>Secondary Education</h3>
+              <div class="school-icon">🎓</div>
+            </div>
+            <div class="card-content">
+              <p>My time at SMA Daeratul Maarifil Wataniah 1 was filled with growth and challenges in study. Key highlights include:</p>
+              <ul>
+                <li>Learning using more advanced Arabic language</li>
+                <li>A national-level athlete in the sport of netball</li>
+                <li>To gain a deeper understanding of Islamic knowledge</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="education-card">
+            <div class="card-header tertiary-card">
+              <h3>Diploma Education</h3>
+              <div class="school-icon">🎯</div>
+            </div>
+            <div class="card-content">
+              <p>Currently pursuing my Diploma at UiTM Kedah, I'm focusing on:</p>
+              <ul>
+                <li>Information Management</li>
+                <li>Digital literacy skills</li>
+                <li>Professional development through campus activities</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="hobbies" class="content">
+        <h2>My Hobbies&#127911</h2>
+        <p>In my leisure time, I always enjoy to:</p>
+		<ul>
+			<li>Listening to music&#127925</li>
+			<li>Cooking&#127869</li>
+			<li>Cafe hunting&#9749</li>
+			<li>Traveling&#128082</li>
+			<li>Capturing nature views&#127781</li>
+			<li>Motorbike&#128293</li>
+		</ul>
+        <div class="image-container">
+          <img src="video/hobby1.jpg" alt="hobbies Photo">
+          <div class="image-description">Exploring new cafes with unique atmospheres and delicious drinks.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/hobby2.jpg" alt="hobbies Photo">
+          <div class="image-description">Special view captured during my leisure activities.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/hobby3.jpg" alt="hobbies Photo">
+          <div class="image-description">Special panorama captured during my travel time.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/hobby4.jpg" alt="hobbies Photo">
+          <div class="image-description">Enjoying my concert time - it helps me happy and fall in love.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/hobby5.jpg" alt="hobbies Photo">
+          <div class="image-description">Nature photography - capturing beautiful moments in the natural world.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/hobby6.jpg" alt="hobbies Photo">
+          <div class="image-description">Cooking is both a hobby and a way to express creativity.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/hobby7.jpg" alt="hobbies Photo">
+          <div class="image-description">Another beautiful snapshot from my travels.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/hobby8.jpg" alt="hobbies Photo">
+          <div class="image-description">Go another cafe hunting in my leisure time.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/hobby9.jpg" alt="hobbies Photo">
+          <div class="image-description">My dream Motorbike.</div>
+        </div>
+      </div>
+
+      <div id="family" class="content">
+        <h2>My Family&#128157</h2>
+        <p>I come from a loving and supportive family. I come from a family of four siblings, and I am the second child. My family is very important to me. They have always supported me in my education and every decision I make. Their encouragement keeps me motivated and helps me grow into a better person every day. They are my strength and inspiration. I&#128151them so much.</p>
+		<ul>
+			<li>Father: Abdul Ghoni - My father always gave me money to support my living expenses throughout my studies &#128158.</li>
+			<li>Mother: Nor Aida - My mother always cooks delicious food for me to eat at college every week &#128158.</li>
+			<li>Siblings: Izzah Atirah - My sister always support me and she always being my gossip partner &#128158. </li>
+			<li>Siblings: Muhammad Naufal - My litte brother always accompanies me to places so that I am not alone &#128158.</li>
+			<li>Siblings: Ahmad Wijdan - My last brother always compliments my cooking and always asks for attention &#128158.</li>
+		</ul>
+		<div class="image-container">
+          <img src="video/family.jpg" alt="Family Photo">
+          <div class="image-description">My wonderful family - my greatest support system and inspiration.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/siblings.jpg" alt="Siblings Photo">
+          <div class="image-description">Quality time with my siblings - full of laughter and love.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/trio.jpg" alt="Trio Photo">
+          <div class="image-description">The three of us - creating memories that will last a lifetime.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/ayah.jpg" alt="ayah Photo">
+          <div class="image-description">This is my lovely father.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/ibu.jpg" alt="ibu Photo">
+          <div class="image-description">This is my pretty mom.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/sister.jpg" alt="sister Photo">
+          <div class="image-description">This is my gossip partner-sister.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/naufal.jpg" alt="naufal Photo">
+          <div class="image-description">This is my annoying little brother-Naufal.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/wijdan.jpg" alt="wijdan Photo">
+          <div class="image-description">This is my youngest brother who loves attention-Wijdan.</div>
+        </div>
+	  </div>
+
+      <div id="friends" class="content">
+        <h2>My Uni Friends&#128109</h2>
+        <p>During my time at university, I met some amazing and kind friends. They're all from the south, while I'm the only one from the north. They would always try to speak in the northern dialect. At first, it sounded quite funny and strange, but over time, they got used to the words I often said. So, these are the friends who made my university life special &#10084:</p>
+        <ul>
+			<li>Nurin Ayzzasyura - She's my roommate for this semester and she from Johor. I know her since our first semester for diploma in UiTM. Nurin always understand my random habits. She always helps me when I'm in trouble &#127827.</li>
+		</ul>
+		<div class="image-container">
+          <img src="video/nurin.jpg" alt="Nurin Photo">
+          <div class="image-description">Nurin - my roommate from Johor and a great support during tough times.</div>
+        </div>
+        <ul>
+			<li>Nur Arieysha - She's my friend since our first met in semester one in diploma. She from Melaka and she always laughs at my jokes. Arieysha was never my roommate but the friendship between me and her was good. We both always shared stories about our love problems &#127827.</li>
+		</ul>
+		<div class="image-container">
+          <img src="video/arieysha.jpg" alt="Arieysha Photo">
+          <div class="image-description">Arieysha from Melaka - always ready to share laughs and stories.</div>
+        </div>
+        <ul>
+			<li>Ernie Shazrin - She's my roommate for first and second semester and I know her since the first day of registration at UiTM and she from Selangor. She's always the one we end up joking about because she rarely pays attention when the three of us are talking &#127827. </li>
+		</ul>
+		<div class="image-container">
+          <img src="video/ernie.jpg" alt="Ernie Photo">
+          <div class="image-description">Ernie from Selangor - my former roommate with a lovable, distracted personality.</div>
+        </div>
+        <ul>
+			<li>Rahwani - I got to know Wani in Semester 2, and she's from Melaka. She's very hardworking and one of the people who helped change my habit of doing assignments at the last minute, now I complete them early. She's also my study buddy &#127827.</li>
+		</ul>
+		<div class="image-container">
+          <img src="video/wani.jpg" alt="Wani Photo">
+          <div class="image-description">Rahwani - my hardworking study buddy who inspires better habits.</div>
+        </div>
+        <ul>
+			<li>Mellysa Syaqiera - I've known her since Semester 3, and She's also from Selangor. She's smart in her studies and has a gentle personality. Mellysa is also one of my study buddies &#127827.</li>
+		</ul>	
+		<div class="image-container">
+          <img src="video/mellysa.jpg" alt="Mellysa Photo">
+          <div class="image-description">Mellysa from Selangor - intelligent, gentle, and always helpful with studies.</div>
+        </div>
+        <ul>
+			<li>Syaniqah Amisyha - Syaniqah is the friend who comes from the furthest place, she's from Sabah and studies in Kedah. She's soft-spoken and really good at giving thoughtful opinions whenever we face any problems. She's also one of my study buddies &#127827.</li>
+		</ul>
+		<div class="image-container">
+          <img src="video/nik.jpg" alt="Syaniqah Photo">
+          <div class="image-description">Syaniqah from Sabah - soft-spoken with thoughtful insights and advice.</div>
+        </div>
+        
+		<p>So here are our photos and memories during our diploma in university life&#10024</p>
+		<div class="image-container">
+          <img src="video/friends1.jpg" alt="Friends Group Photo 1">
+          <div class="image-description">Unforgettable moments with my university friends after final exam second semester.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/friends2.jpg" alt="Friends Group Photo 2">
+          <div class="image-description">Having a great short trip to Penang Hill with girls.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/friends3.jpg" alt="Friends Group Photo 3">
+          <div class="image-description">Relieve stress after studying by going to the beach together.</div>
+        </div>
+        <div class="image-container">
+          <img src="video/friends4.jpg" alt="Friends Group Photo 4">
+          <div class="image-description">Celebrating Eid al-Fitr at university together with friends and classmates.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/friends5.jpg" alt="Friends Group Photo 5">
+          <div class="image-description">Having a day trip to Perlis together during the study week break.</div>
+        </div>
+		<div class="image-container">
+          <img src="video/friends6.jpg" alt="Friends Group Photo 6">
+          <div class="image-description">Another short trip to Penang during sem break.</div>
+        </div>
+      </div>
+
+      <div id="contact" class="content">
+        <h2>Contact&#128222</h2>
+        <div class="contact-container">
+          <div class="contact-intro">
+            <p>I'd love to connect with you! Feel free to reach out through any of these platforms:</p>
+          </div>
+          
+          <div class="contact-cards">
+            <div class="contact-card">
+              <div class="contact-icon">✉️</div>
+              <h3>Email</h3>
+              <p>izzahbatrisyia82@gmail.com</p>
+              <a href="mailto:izzahbatrisyia82@gmail.com" class="contact-button">Send Email</a>
+            </div>
+            
+            <div class="contact-card">
+              <div class="contact-icon">📱</div>
+              <h3>Phone</h3>
+              <p>018-4722436</p>
+              <a href="tel:+60184722436" class="contact-button">Call Me</a>
+            </div>
+            
+            <div class="contact-card">
+              <div class="contact-icon">📷</div>
+              <h3>Instagram</h3>
+              <p>@izhbtrsyia</p>
+              <a href="https://www.instagram.com/izhbtrsyia/" target="_blank" class="contact-button">Follow Me</a>
+            </div>
+          </div>
+          
+          
+  <footer>
+    &copy; 2025 IZZAH BATRISYIA. All rights reserved.
+  </footer>
+
+  <script>
+    function showContent(id) {
+      const contents = document.querySelectorAll('.content');
+      contents.forEach(c => {
+        c.classList.remove('active-content');
+      });
+      
+      const menuLinks = document.querySelectorAll('.sidebar a');
+      menuLinks.forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      setTimeout(() => {
+        document.getElementById(id).classList.add('active-content');
+        document.getElementById(id + '-link').classList.add('active');
+      }, 100);
+      
+      document.querySelector('.main-content').scrollTop = 0;
+    }
+    
+    window.onload = function() {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        const src = img.getAttribute('src');
+        if (src) {
+          const preloadImg = new Image();
+          preloadImg.src = src;
+        }
+      });
+    };
+  </script>
+</body>
+</html>
